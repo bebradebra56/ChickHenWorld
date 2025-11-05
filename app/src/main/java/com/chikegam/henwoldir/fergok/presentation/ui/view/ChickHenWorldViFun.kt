@@ -18,7 +18,7 @@ class ChickHenWorldViFun(private val context: Context) {
         }
         return FileProvider.getUriForFile(
             context,
-            "com.chikegam.henwoldir.fileprovider",
+            "com.chikegam.henwoldirrrr",
             File(dir, "/$df.jpg")
         )
     }

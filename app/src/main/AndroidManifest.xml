@@ -50,7 +50,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.chikegam.henwoldir.fileprovider"
+            android:authorities="com.chikegam.henwoldirrrr"
             android:exported="false"
             android:grantUriPermissions="true" >
             <meta-data
