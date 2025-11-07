@@ -6,9 +6,12 @@ import android.view.WindowManager
 import com.appsflyer.AppsFlyerConversionListener
 import com.appsflyer.AppsFlyerLib
 import com.appsflyer.attribution.AppsFlyerRequestListener
+import com.appsflyer.deeplink.DeepLinkListener
+import com.appsflyer.deeplink.DeepLinkResult
 import com.chikegam.henwoldir.fergok.presentation.di.chickHenWorldModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -46,6 +49,7 @@ private const val CHICK_HEN_WORLD_APP_DEV = "mJXzVWA7GHVJ3gszkgUuWC"
 private const val CHICK_HEN_WORLD_LIN = "com.chikegam.henwoldir"
 class ChickHenWorldApp : Application() {
     private var chickHenWorldIsResumed = false
+    private var chickHenWorldConversionTimeoutJob: Job? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -54,13 +58,30 @@ class ChickHenWorldApp : Application() {
         chickHenWorldSetDebufLogger(appsflyer)
         chickHenWorldMinTimeBetween(appsflyer)
 
+        AppsFlyerLib.getInstance().subscribeForDeepLink(object : DeepLinkListener {
+            override fun onDeepLinking(p0: DeepLinkResult) {
+                when(p0.status) {
+                    DeepLinkResult.Status.FOUND -> {
+                        Log.d(CHICK_HEN_WORLD_MAIN_TAG, "onDeepLinking found: ${p0.deepLink}")
+
+                    }
+                    DeepLinkResult.Status.NOT_FOUND -> {
+                        Log.d(CHICK_HEN_WORLD_MAIN_TAG, "onDeepLinking not found: ${p0.deepLink}")
+                    }
+                    DeepLinkResult.Status.ERROR -> {
+                        Log.d(CHICK_HEN_WORLD_MAIN_TAG, "onDeepLinking error: ${p0.error}")
+                    }
+                }
+            }
+
+        })
 
         appsflyer.init(
             CHICK_HEN_WORLD_APP_DEV,
             object : AppsFlyerConversionListener {
                 override fun onConversionDataSuccess(p0: MutableMap<String, Any>?) {
+                    chickHenWorldConversionTimeoutJob?.cancel()
                     Log.d(CHICK_HEN_WORLD_MAIN_TAG, "onConversionDataSuccess: $p0")
-
                     val afStatus = p0?.get("af_status")?.toString() ?: "null"
                     if (afStatus == "Organic") {
                         CoroutineScope(Dispatchers.IO).launch {
@@ -77,26 +98,28 @@ class ChickHenWorldApp : Application() {
 
                                 val resp = response.body()
                                 Log.d(CHICK_HEN_WORLD_MAIN_TAG, "After 5s: $resp")
-                                if (resp?.get("af_status") == "Organic") {
-                                    todoSafeResume(ChickHenWorldAppsFlyerState.ChickHenWorldError)
+                                if (resp?.get("af_status") == "Organic" || resp?.get("af_status") == null) {
+                                    chickHenWorldSafeResume(ChickHenWorldAppsFlyerState.ChickHenWorldError)
                                 } else {
-                                    todoSafeResume(
+                                    chickHenWorldSafeResume(
                                         ChickHenWorldAppsFlyerState.ChickHenWorldSuccess(resp)
                                     )
                                 }
                             } catch (d: Exception) {
                                 Log.d(CHICK_HEN_WORLD_MAIN_TAG, "Error: ${d.message}")
-                                todoSafeResume(ChickHenWorldAppsFlyerState.ChickHenWorldError)
+                                chickHenWorldSafeResume(ChickHenWorldAppsFlyerState.ChickHenWorldError)
                             }
                         }
                     } else {
-                        todoSafeResume(ChickHenWorldAppsFlyerState.ChickHenWorldSuccess(p0))
+                        chickHenWorldSafeResume(ChickHenWorldAppsFlyerState.ChickHenWorldSuccess(p0))
                     }
                 }
 
                 override fun onConversionDataFail(p0: String?) {
+                    chickHenWorldConversionTimeoutJob?.cancel()
                     Log.d(CHICK_HEN_WORLD_MAIN_TAG, "onConversionDataFail: $p0")
-                    todoSafeResume(ChickHenWorldAppsFlyerState.ChickHenWorldError)
+
+                    chickHenWorldSafeResume(ChickHenWorldAppsFlyerState.ChickHenWorldError)
                 }
 
                 override fun onAppOpenAttribution(p0: MutableMap<String, String>?) {
@@ -109,7 +132,6 @@ class ChickHenWorldApp : Application() {
             },
             this
         )
-
         appsflyer.start(this, CHICK_HEN_WORLD_APP_DEV, object :
             AppsFlyerRequestListener {
             override fun onSuccess() {
@@ -118,9 +140,10 @@ class ChickHenWorldApp : Application() {
 
             override fun onError(p0: Int, p1: String) {
                 Log.d(CHICK_HEN_WORLD_MAIN_TAG, "AppsFlyer start error: $p0 - $p1")
-                todoSafeResume(ChickHenWorldAppsFlyerState.ChickHenWorldError)
+//                todoSafeResume(ChickHenWorldAppsFlyerState.ChickHenWorldError)
             }
         })
+        chickHenWorldStartConversionTimeout()
         startKoin {
             androidLogger(Level.DEBUG)
             androidContext(this@ChickHenWorldApp)
@@ -131,8 +154,18 @@ class ChickHenWorldApp : Application() {
             )
         }
     }
+    private fun chickHenWorldStartConversionTimeout() {
+        chickHenWorldConversionTimeoutJob = CoroutineScope(Dispatchers.Main).launch {
+            delay(30000)
+            if (!chickHenWorldIsResumed) {
+                Log.d(CHICK_HEN_WORLD_MAIN_TAG, "TIMEOUT: No conversion data received in 30s")
+                chickHenWorldSafeResume(ChickHenWorldAppsFlyerState.ChickHenWorldError)
+            }
+        }
+    }
 
-    private fun todoSafeResume(state: ChickHenWorldAppsFlyerState) {
+    private fun chickHenWorldSafeResume(state: ChickHenWorldAppsFlyerState) {
+        chickHenWorldConversionTimeoutJob?.cancel()
         if (!chickHenWorldIsResumed) {
             chickHenWorldIsResumed = true
             chickHenWorldConversionFlow.value = state
