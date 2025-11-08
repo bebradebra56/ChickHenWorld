@@ -1,0 +1,20 @@
+workflows:
+  android_release:
+    name: Android release workflow
+    environment:
+      android_signing:
+        - chick_hen_world_keystore
+      vars:
+        PACKAGE_NAME: "com.chikegam.henwoldir"
+    scripts:
+      - name: Set Android SDK location
+        script: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/local.properties"
+      - name: Give gradlew execute permission
+        script: |
+          chmod +x ./gradlew
+      - name: Build Android Release
+        script: |
+          ./gradlew bundleRelease
+    artifacts:
+      - app/build/outputs/**/*.aab

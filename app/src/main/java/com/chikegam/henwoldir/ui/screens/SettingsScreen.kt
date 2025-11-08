@@ -67,15 +67,15 @@ fun SettingsScreen() {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Notifications Section
-            SettingsSection(title = "Notifications") {
-                SettingsSwitchItem(
-                    icon = Icons.Default.Notifications,
-                    title = "Daily Breed Notification",
-                    description = "Get notified about new breeds every day",
-                    checked = notificationsEnabled,
-                    onCheckedChange = { notificationsEnabled = it }
-                )
-            }
+//            SettingsSection(title = "Notifications") {
+//                SettingsSwitchItem(
+//                    icon = Icons.Default.Notifications,
+//                    title = "Daily Breed Notification",
+//                    description = "Get notified about new breeds every day",
+//                    checked = notificationsEnabled,
+//                    onCheckedChange = { notificationsEnabled = it }
+//                )
+//            }
 
 //            // Appearance Section
 //            SettingsSection(title = "Appearance") {
@@ -107,13 +107,13 @@ fun SettingsScreen() {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                SettingsItem(
-                    icon = Icons.Default.Code,
-                    title = "Developer",
-                    description = "Chick Hen World Team"
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
+//                SettingsItem(
+//                    icon = Icons.Default.Code,
+//                    title = "Developer",
+//                    description = "Chick Hen World Team"
+//                )
+//
+//                Spacer(modifier = Modifier.height(8.dp))
 
                 Card(
                     modifier = Modifier.fillMaxWidth(),
