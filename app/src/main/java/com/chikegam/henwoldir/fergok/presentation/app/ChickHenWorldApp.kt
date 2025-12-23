@@ -99,11 +99,9 @@ class ChickHenWorldApp : Application() {
                                 val resp = response.body()
                                 Log.d(CHICK_HEN_WORLD_MAIN_TAG, "After 5s: $resp")
                                 if (resp?.get("af_status") == "Organic" || resp?.get("af_status") == null) {
-                                    chickHenWorldSafeResume(ChickHenWorldAppsFlyerState.ChickHenWorldError)
+                                    chickHenWorldSafeResume(ChickHenWorldAppsFlyerState.ChickHenWorldSuccess(p0))
                                 } else {
-                                    chickHenWorldSafeResume(
-                                        ChickHenWorldAppsFlyerState.ChickHenWorldSuccess(resp)
-                                    )
+                                    chickHenWorldSafeResume(ChickHenWorldAppsFlyerState.ChickHenWorldSuccess(resp))
                                 }
                             } catch (d: Exception) {
                                 Log.d(CHICK_HEN_WORLD_MAIN_TAG, "Error: ${d.message}")

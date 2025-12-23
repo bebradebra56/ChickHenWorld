@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 
 private const val CHICK_HEN_WORLD_A = "com.chikegam.henwoldir"
-private const val CHICK_HEN_WORLD_B = "chikhenworld"
+private const val CHICK_HEN_WORLD_B = "chickhenworld-b9222"
 data class ChickHenWorldParam (
     @SerializedName("af_id")
     val chickHenWorldAfId: String,
