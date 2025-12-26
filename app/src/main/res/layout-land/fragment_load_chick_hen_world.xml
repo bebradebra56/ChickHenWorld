@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/chick_hen_world_portain_background" />
+        app:srcCompat="@drawable/chick_hen_world_landscape_bc" />
 
 
     <androidx.constraintlayout.widget.Group
@@ -50,7 +50,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.93" />
+        app:layout_constraintVertical_bias="0.82" />
 
     <TextView
         android:id="@+id/chickHenWorldLoadConnectionStateText"
@@ -70,7 +70,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.65999997" />
+        app:layout_constraintVertical_bias="0.62" />
 
 
     <androidx.constraintlayout.widget.Group
@@ -78,7 +78,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="chickHenWorldNotifText,chickHenWorldGrandButton,chickHenWorldSkipButton,chickHenWorldNotifText2" />
+        app:constraint_referenced_ids="chickHenWorldNotiBack,chickHenWorldNotifText,chickHenWorldGrandButton,chickHenWorldSkipButton,chickHenWorldNotifText2" />
+
+    <ImageView
+        android:id="@+id/chickHenWorldNotiBack"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/chick_hen_world_landscape_background" />
 
     <TextView
         android:id="@+id/chickHenWorldNotifText"
@@ -86,7 +97,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="30dp"
         android:fontFamily="@font/adlam_display"
         android:gravity="center"
         android:shadowColor="@color/black"
@@ -105,9 +116,9 @@
     <Button
         android:id="@+id/chickHenWorldGrandButton"
         android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="100dp"
-        android:layout_marginEnd="100dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="120dp"
+        android:layout_marginEnd="120dp"
         android:layout_marginBottom="1dp"
         android:background="@drawable/ic_chick_hen_world_btn"
         android:fontFamily="@font/adlam_display"
@@ -125,7 +136,7 @@
         android:id="@+id/chickHenWorldSkipButton"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="21dp"
         android:fontFamily="@font/adlam_display"
         android:gravity="center"
         android:shadowColor="@color/black"
@@ -145,7 +156,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
         android:layout_marginEnd="50dp"
-        android:layout_marginBottom="19dp"
+        android:layout_marginBottom="21dp"
         android:fontFamily="@font/adlam_display"
         android:gravity="center"
         android:letterSpacing="0"

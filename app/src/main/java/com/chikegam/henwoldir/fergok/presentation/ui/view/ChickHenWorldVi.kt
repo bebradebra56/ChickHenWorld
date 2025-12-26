@@ -27,6 +27,10 @@ class ChickHenWorldVi(
     private val chickHenWorldCallback: ChickHenWorldCallBack,
     private val chickHenWorldWindow: Window
 ) : WebView(chickHenWorldContext) {
+    private var chickHenWorldFileChooserHandler: ((ValueCallback<Array<Uri>>?) -> Unit)? = null
+    fun chickHenWorldSetFileChooserHandler(handler: (ValueCallback<Array<Uri>>?) -> Unit) {
+        this.chickHenWorldFileChooserHandler = handler
+    }
     init {
         val webSettings = settings
         webSettings.apply {
@@ -35,9 +39,7 @@ class ChickHenWorldVi(
             allowContentAccess = true
             domStorageEnabled = true
             javaScriptCanOpenWindowsAutomatically = true
-            userAgentString =
-                WebSettings.getDefaultUserAgent(chickHenWorldContext).replace("; wv)", "")
-                    .replace("Version/4.0 ", "")
+            userAgentString = WebSettings.getDefaultUserAgent(chickHenWorldContext).replace("; wv)", "").replace("Version/4.0 ", "")
             @SuppressLint("SetJavaScriptEnabled")
             javaScriptEnabled = true
             cacheMode = WebSettings.LOAD_NO_CACHE
@@ -61,18 +63,15 @@ class ChickHenWorldVi(
                 return if (request?.isRedirect == true) {
                     view?.loadUrl(request?.url.toString())
                     true
-                } else if (URLUtil.isNetworkUrl(link)) {
+                }
+                else if (URLUtil.isNetworkUrl(link)) {
                     false
                 } else {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
                     try {
                         chickHenWorldContext.startActivity(intent)
                     } catch (e: Exception) {
-                        Toast.makeText(
-                            chickHenWorldContext,
-                            "This application not found",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(chickHenWorldContext, "This application not found", Toast.LENGTH_SHORT).show()
                     }
                     true
                 }
@@ -81,22 +80,13 @@ class ChickHenWorldVi(
 
             override fun onPageFinished(view: WebView?, url: String?) {
                 CookieManager.getInstance().flush()
-                chickHenWorldCallback.chickHenWorldOnFirstPageFinished()
                 if (url?.contains("ninecasino") == true) {
-                    ChickHenWorldApp.chickHenWorldInputMode =
-                        WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
-                    Log.d(
-                        ChickHenWorldApp.CHICK_HEN_WORLD_MAIN_TAG,
-                        "onPageFinished : ${ChickHenWorldApp.chickHenWorldInputMode}"
-                    )
+                    ChickHenWorldApp.chickHenWorldInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
+                    Log.d(ChickHenWorldApp.CHICK_HEN_WORLD_MAIN_TAG, "onPageFinished : ${ChickHenWorldApp.chickHenWorldInputMode}")
                     chickHenWorldWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
                 } else {
-                    ChickHenWorldApp.chickHenWorldInputMode =
-                        WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
-                    Log.d(
-                        ChickHenWorldApp.CHICK_HEN_WORLD_MAIN_TAG,
-                        "onPageFinished : ${ChickHenWorldApp.chickHenWorldInputMode}"
-                    )
+                    ChickHenWorldApp.chickHenWorldInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+                    Log.d(ChickHenWorldApp.CHICK_HEN_WORLD_MAIN_TAG, "onPageFinished : ${ChickHenWorldApp.chickHenWorldInputMode}")
                     chickHenWorldWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
                 }
             }
@@ -106,7 +96,7 @@ class ChickHenWorldVi(
 
         super.setWebChromeClient(object : WebChromeClient() {
             override fun onPermissionRequest(request: PermissionRequest?) {
-                chickHenWorldCallback.chickHenWorldOnPermissionRequest(request)
+                request?.grant(request.resources)
             }
 
             override fun onShowFileChooser(
@@ -114,10 +104,9 @@ class ChickHenWorldVi(
                 filePathCallback: ValueCallback<Array<Uri>>?,
                 fileChooserParams: WebChromeClient.FileChooserParams?,
             ): Boolean {
-                chickHenWorldCallback.chickHenWorldOnShowFileChooser(filePathCallback)
+                chickHenWorldFileChooserHandler?.invoke(filePathCallback)
                 return true
             }
-
             override fun onCreateWindow(
                 view: WebView?,
                 isDialog: Boolean,
@@ -139,13 +128,11 @@ class ChickHenWorldVi(
         if (resultMsg == null) return
         if (resultMsg.obj != null && resultMsg.obj is WebView.WebViewTransport) {
             val transport = resultMsg.obj as WebView.WebViewTransport
-            val windowWebView =
-                ChickHenWorldVi(chickHenWorldContext, chickHenWorldCallback, chickHenWorldWindow)
+            val windowWebView = ChickHenWorldVi(chickHenWorldContext, chickHenWorldCallback, chickHenWorldWindow)
             transport.webView = windowWebView
             resultMsg.sendToTarget()
             chickHenWorldCallback.chickHenWorldHandleCreateWebWindowRequest(windowWebView)
         }
     }
-
 
 }

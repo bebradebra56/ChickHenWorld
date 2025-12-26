@@ -1,40 +1,22 @@
 package com.chikegam.henwoldir
 
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.webkit.ValueCallback
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
-import com.chikegam.henwoldir.fergok.presentation.pushhandler.ChickHenWorldPushHandler
 import com.chikegam.henwoldir.fergok.ChickHenWorldGlobalLayoutUtil
 import com.chikegam.henwoldir.fergok.chickHenWorldSetupSystemBars
 import com.chikegam.henwoldir.fergok.presentation.app.ChickHenWorldApp
+import com.chikegam.henwoldir.fergok.presentation.pushhandler.ChickHenWorldPushHandler
 import org.koin.android.ext.android.inject
 
 class ChickHenWorldActivity : AppCompatActivity() {
-    lateinit var chickHenWorldPhoto: Uri
-    var chickHenWorldFilePathFromChrome: ValueCallback<Array<Uri>>? = null
-
-    val chickHenWorldTakeFile = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {
-        chickHenWorldFilePathFromChrome?.onReceiveValue(arrayOf(it ?: Uri.EMPTY))
-    }
-
-    val chickHenWorldTakePhoto = registerForActivityResult(ActivityResultContracts.TakePicture()) {
-        if (it) {
-            chickHenWorldFilePathFromChrome?.onReceiveValue(arrayOf(chickHenWorldPhoto))
-        } else {
-            chickHenWorldFilePathFromChrome?.onReceiveValue(null)
-        }
-    }
-
     private val chickHenWorldPushHandler by inject<ChickHenWorldPushHandler>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

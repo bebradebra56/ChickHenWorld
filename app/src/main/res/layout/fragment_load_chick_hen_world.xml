@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/chick_hen_world_portain_background" />
+        app:srcCompat="@drawable/chick_hen_world_back" />
 
 
     <androidx.constraintlayout.widget.Group
@@ -78,7 +78,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="chickHenWorldNotifText,chickHenWorldGrandButton,chickHenWorldSkipButton,chickHenWorldNotifText2" />
+        app:constraint_referenced_ids="chickHenWorldNotiBack,chickHenWorldNotifText,chickHenWorldGrandButton,chickHenWorldSkipButton,chickHenWorldNotifText2" />
+
+    <ImageView
+        android:id="@+id/chickHenWorldNotiBack"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/chick_hen_world_portain_back" />
 
     <TextView
         android:id="@+id/chickHenWorldNotifText"
